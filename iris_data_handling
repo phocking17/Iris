@@ -1,0 +1,91 @@
+# Python
+# Iris Data Set
+import random
+
+
+
+# Flower Object Class
+class Flower:
+	def __init__(self, sepal_length, sepal_width, petal_length, petal_width, clas):
+		self.clas = clas
+		self.sl = sepal_length
+		self.sw = sepal_width
+		self.pl = petal_length
+		self.pw = petal_width
+
+
+
+# Turns Iris set into list of flower objects
+def downloadIris():
+	f = open('iris.data', 'r')
+	objects = f.readlines()
+	objects = [i.split(',') for i in objects]
+	flower_objects = [Flower(i[0], i[1], i[2], i[3], i[4]) for i in objects[1:-1]]
+	return flower_objects
+
+
+# Splits Data
+def split_data(objects, p_train = 0.80):
+
+	# Initializes training and test list
+	training = []
+	test = []
+	random.shuffle(objects)
+	
+	while len(objects) != 0:
+		random.shuffle(objects)
+		select = objects[0]
+
+		selector = random.random()
+		if selector > p_train:
+			test.append(select)
+		else:
+			training.append(select)
+
+		objects = objects[1:]
+
+	return training, test
+
+def test_shuffle(lisp):
+	x = []
+	for i in lisp:
+		x.append(i)
+	random.shuffle(lisp)
+	for i in range(len(lisp)):
+		if x[i] == lisp[i]:
+			print(True)
+		else: 
+			print(False)
+
+
+
+
+
+# Turns Iris object flower list into lists of objects by classifier
+def class_divide(object_list):
+	class_dict = {}
+
+	for i in object_list:
+		if i.clas in class_dict:
+			i_list = class_dict[i.clas]
+			i_list.append(i)
+			class_dict[i.clas] = i_list
+
+		else:
+			x = []
+			x.append(i)
+			class_dict[i.clas] = x
+	return class_dict
+
+
+
+
+#main
+Flowers = downloadIris()
+
+split = split_data(Flowers)
+
+training = split[0]
+test = split[1]
+
+class_dict = class_divide(training)
